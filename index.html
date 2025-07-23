@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUCATION EDITION - Aprender es jugar, jugar es aprender</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .emerald-bg {
+            background: linear-gradient(135deg, #10b981, #059669, #047857);
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .team-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .star-rating {
+            color: #fbbf24;
+        }
+
+        .lazy-load {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .lazy-load.loaded {
+            opacity: 1;
+        }
+
+        /* Dark Mode */
+        .dark {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .dark .bg-white {
+            background-color: #2d2d2d !important;
+        }
+
+        .dark .bg-gray-50 {
+            background-color: #3a3a3a !important;
+        }
+
+        .dark .bg-gray-100 {
+            background-color: #2a2a2a !important;
+        }
+
+        .dark .text-gray-800 {
+            color: #ffffff !important;
+        }
+
+        .dark .text-gray-600 {
+            color: #d1d5db !important;
+        }
+
+        .dark .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+
+        .dark .border-gray-300 {
+            border-color: #4a4a4a !important;
+        }
+
+        /* Feminine Mode */
+        .feminine .emerald-bg {
+            background: linear-gradient(135deg, #ec4899, #db2777, #be185d);
+        }
+
+        .feminine .bg-emerald-600 {
+            background-color: #ec4899 !important;
+        }
+
+        .feminine .bg-emerald-700 {
+            background-color: #db2777 !important;
+        }
+
+        .feminine .text-emerald-600 {
+            color: #ec4899 !important;
+        }
+
+        .feminine .text-emerald-200 {
+            color: #fbcfe8 !important;
+        }
+
+        .feminine .focus\:ring-emerald-500:focus {
+            --tw-ring-color: #ec4899 !important;
+        }
+
+        .feminine .hover\:bg-emerald-600:hover {
+            background-color: #ec4899 !important;
+        }
+
+        .feminine .hover\:bg-emerald-700:hover {
+            background-color: #db2777 !important;
+        }
+
+        .feminine .hover\:text-emerald-200:hover {
+            color: #fbcfe8 !important;
+        }
+
+        /* Masculine Mode */
+        .masculine .emerald-bg {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8, #2563eb);
+        }
+
+        .masculine .bg-emerald-600 {
+            background-color: #1e40af !important;
+        }
+
+        .masculine .bg-emerald-700 {
+            background-color: #1d4ed8 !important;
+        }
+
+        .masculine .text-emerald-600 {
+            color: #1e40af !important;
+        }
+
+        .masculine .text-emerald-200 {
+            color: #dbeafe !important;
+        }
+
+        .masculine .focus\:ring-emerald-500:focus {
+            --tw-ring-color: #1e40af !important;
+        }
+
+        .masculine .hover\:bg-emerald-600:hover {
+            background-color: #1e40af !important;
+        }
+
+        .masculine .hover\:bg-emerald-700:hover {
+            background-color: #1d4ed8 !important;
+        }
+
+        .masculine .hover\:text-emerald-200:hover {
+            color: #dbeafe !important;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="emerald-bg text-white shadow-lg sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-gamepad text-2xl"></i>
+                        <h1 class="text-xl font-bold">EDUCATION EDITION</h1>
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="#inicio" class="hover:text-emerald-200 transition">Inicio</a>
+                        <a href="#explorar" class="hover:text-emerald-200 transition">Explorar</a>
+                        <a href="#subir" class="hover:text-emerald-200 transition">Subir Juego</a>
+                        <a href="#equipo" class="hover:text-emerald-200 transition">Equipo</a>
+                        <a href="#inspiracion" class="hover:text-emerald-200 transition">Inspiración</a>
+                        <a href="#admin" class="hover:text-emerald-200 transition">Admin</a>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button @click="toggleLanguage"
+                            class="bg-emerald-600 px-3 py-1 rounded text-sm hover:bg-emerald-700 transition">
+                            {{ currentLanguage === 'es' ? 'EN' : 'ES' }}
+                        </button>
+                        <button @click="toggleDarkMode"
+                            class="bg-emerald-600 px-3 py-1 rounded text-sm hover:bg-emerald-700 transition"
+                            :title="darkMode ? 'Modo Claro' : 'Modo Oscuro'">
+                            <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+                        </button>
+                        <button @click="toggleThemeMode"
+                            class="bg-emerald-600 px-3 py-1 rounded text-sm hover:bg-emerald-700 transition"
+                            :title="getThemeModeTitle()">
+                            <i :class="getThemeModeIcon()"></i>
+                        </button>
+                        <button @click="togglePresentationMode"
+                            class="bg-emerald-600 px-3 py-1 rounded text-sm hover:bg-emerald-700 transition">
+                            <i class="fas fa-tv"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="inicio" class="emerald-bg text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-5xl font-bold mb-4">{{ texts[currentLanguage].welcome }}</h1>
+                <p class="text-2xl mb-8 text-emerald-100">{{ texts[currentLanguage].motto }}</p>
+                <div class="max-w-4xl mx-auto">
+                    <p class="text-lg mb-8 leading-relaxed">{{ texts[currentLanguage].justification }}</p>
+                </div>
+
+                <!-- QR Code Section -->
+                <div v-if="qrCode" class="mt-12">
+                    <h3 class="text-xl mb-4">{{ texts[currentLanguage].qrTitle }}</h3>
+                    <div class="flex justify-center">
+                        <img :src="qrCode" alt="QR Code" class="w-48 h-48 border-4 border-white rounded-lg shadow-lg">
+                    </div>
+                </div>
+
+                <div class="mt-12 flex flex-wrap justify-center gap-4">
+                    <a href="#explorar"
+                        class="bg-white text-emerald-600 px-8 py-3 rounded-full font-semibold hover:bg-emerald-50 transition transform hover:scale-105">
+                        {{ texts[currentLanguage].exploreGames }}
+                    </a>
+                    <a href="#subir"
+                        class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-emerald-600 transition transform hover:scale-105">
+                        {{ texts[currentLanguage].uploadGame }}
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- Upload Game Section -->
+        <section id="subir" class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">{{ texts[currentLanguage].uploadGameTitle
+                    }}</h2>
+                <div class="max-w-2xl mx-auto bg-gray-50 p-8 rounded-lg shadow-lg">
+                    <form @submit.prevent="uploadGame" class="space-y-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">{{ texts[currentLanguage].gameTitle
+                                }}</label>
+                            <input v-model="newGame.title" type="text" required
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">{{ texts[currentLanguage].subject
+                                }}</label>
+                            <select v-model="newGame.subject" required
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                                <option value="">{{ texts[currentLanguage].selectSubject }}</option>
+                                <option v-for="subject in subjects" :key="subject" :value="subject">{{ subject }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">{{ texts[currentLanguage].gameLink
+                                }}</label>
+                            <input v-model="newGame.link" type="url" required
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                placeholder="https://...">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">{{ texts[currentLanguage].thumbnail
+                                }}</label>
+                            <input @change="handleImageUpload" type="file" accept="image/*" required
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">{{ texts[currentLanguage].description
+                                }}</label>
+                            <textarea v-model="newGame.description" required rows="4"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition transform hover:scale-105">
+                            {{ texts[currentLanguage].uploadButton }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Explore Games Section -->
+        <section id="explorar" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">{{ texts[currentLanguage].exploreTitle }}
+                </h2>
+
+                <!-- Filters -->
+                <div class="max-w-4xl mx-auto mb-8">
+                    <div class="flex flex-wrap gap-4 justify-center mb-6">
+                        <button @click="filterBySubject('')"
+                            :class="selectedSubject === '' ? 'bg-emerald-600 text-white' : 'bg-white text-gray-700'"
+                            class="px-4 py-2 rounded-full border hover:bg-emerald-600 hover:text-white transition">
+                            {{ texts[currentLanguage].allSubjects }}
+                        </button>
+                        <button v-for="subject in subjects" :key="subject" @click="filterBySubject(subject)"
+                            :class="selectedSubject === subject ? 'bg-emerald-600 text-white' : 'bg-white text-gray-700'"
+                            class="px-4 py-2 rounded-full border hover:bg-emerald-600 hover:text-white transition">
+                            {{ subject }}
+                        </button>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <input v-model="searchQuery" type="text" :placeholder="texts[currentLanguage].searchPlaceholder"
+                            class="w-full max-w-md p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Games Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div v-for="game in filteredGames" :key="game.id"
+                        class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                        <img :src="game.thumbnail" :alt="game.title" class="w-full h-48 object-cover lazy-load"
+                            @load="$event.target.classList.add('loaded')">
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2 text-gray-800">{{ game.title }}</h3>
+                            <p class="text-emerald-600 font-semibold mb-2">{{ game.subject }}</p>
+                            <p class="text-gray-600 text-sm mb-4">{{ game.description }}</p>
+
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-eye text-gray-500"></i>
+                                    <span class="text-sm text-gray-600">{{ game.views }}</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <button @click="toggleLike(game)"
+                                        class="text-yellow-500 hover:text-yellow-600 transition">
+                                        <i :class="game.liked ? 'fas fa-star' : 'far fa-star'"></i>
+                                    </button>
+                                    <span class="text-sm text-gray-600">{{ game.likes }}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex space-x-2">
+                                <a :href="game.link" target="_blank" @click="incrementViews(game)"
+                                    class="flex-1 bg-emerald-600 text-white py-2 px-4 rounded text-center hover:bg-emerald-700 transition">
+                                    {{ texts[currentLanguage].playButton }}
+                                </a>
+                                <button @click="shareGame(game)"
+                                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                                <button @click="showDeleteModal(game)"
+                                    class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+
+                            <!-- Comments Section -->
+                            <div class="mt-4 border-t pt-4">
+                                <h4 class="font-semibold mb-2">{{ texts[currentLanguage].comments }}</h4>
+                                <div v-for="comment in game.comments" :key="comment.id"
+                                    class="bg-gray-50 p-2 rounded mb-2">
+                                    <p class="text-sm">{{ comment.text }}</p>
+                                    <p class="text-xs text-gray-500">{{ comment.author }} - {{ comment.date }}</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <input v-model="newComment[game.id]" type="text"
+                                        :placeholder="texts[currentLanguage].addComment"
+                                        class="flex-1 p-2 border rounded text-sm">
+                                    <button @click="addComment(game)"
+                                        class="bg-emerald-600 text-white px-3 py-2 rounded text-sm hover:bg-emerald-700 transition">
+                                        {{ texts[currentLanguage].send }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Team Section -->
+        <section id="equipo" class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">{{ texts[currentLanguage].teamTitle }}
+                </h2>
+                <p class="text-center text-gray-600 mb-12">{{ texts[currentLanguage].teamSubtitle }}</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 max-w-6xl mx-auto">
+                    <div v-for="(member, index) in teamMembers" :key="member.name" class="text-center">
+                        <div class="team-circle mx-auto mb-4 text-white font-bold text-lg shadow-lg"
+                            :style="{ backgroundColor: member.color }">
+                            {{ member.name }}
+                        </div>
+                        <p class="text-emerald-600 font-semibold">{{ member.quality }}</p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <p class="text-gray-600 max-w-2xl mx-auto">{{ texts[currentLanguage].teamDescription }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Inspiration Section -->
+        <section id="inspiracion" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">{{
+                    texts[currentLanguage].inspirationTitle }}</h2>
+                <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="md:flex">
+                        <div class="md:w-1/3 bg-emerald-600 p-8 text-white text-center">
+                            <div class="w-32 h-32 bg-white rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <i class="fas fa-user text-emerald-600 text-4xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">Mateo Alayza</h3>
+                            <p class="text-emerald-200">{{ texts[currentLanguage].founder }}</p>
+                        </div>
+                        <div class="md:w-2/3 p-8">
+                            <h4 class="text-xl font-bold text-gray-800 mb-4">{{ texts[currentLanguage].biographyTitle }}
+                            </h4>
+                            <p class="text-gray-600 leading-relaxed mb-4">{{ texts[currentLanguage].biography1 }}</p>
+                            <p class="text-gray-600 leading-relaxed mb-4">{{ texts[currentLanguage].biography2 }}</p>
+                            <p class="text-gray-600 leading-relaxed">{{ texts[currentLanguage].biography3 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin" class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">{{ texts[currentLanguage].adminTitle }}
+                </h2>
+                <div class="max-w-2xl mx-auto space-y-8">
+
+                    <!-- QR Code Upload -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4">{{ texts[currentLanguage].uploadQR }}</h3>
+                        <input @change="handleQRUpload" type="file" accept="image/*"
+                            class="w-full p-3 border border-gray-300 rounded-lg">
+                    </div>
+
+                    <!-- WhatsApp Number -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4">{{ texts[currentLanguage].whatsappNumber }}</h3>
+                        <div class="flex space-x-2">
+                            <input v-model="whatsappNumber" type="tel" placeholder="+51 999 999 999"
+                                class="flex-1 p-3 border border-gray-300 rounded-lg">
+                            <button @click="saveWhatsappNumber"
+                                class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition">
+                                {{ texts[currentLanguage].save }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Additional Images -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4">{{ texts[currentLanguage].uploadImages }}</h3>
+                        <input @change="handleAdditionalImages" type="file" accept="image/*" multiple
+                            class="w-full p-3 border border-gray-300 rounded-lg">
+                        <div v-if="additionalImages.length > 0" class="mt-4 grid grid-cols-3 gap-4">
+                            <div v-for="(image, index) in additionalImages" :key="index" class="relative">
+                                <img :src="image" alt="Additional Image" class="w-full h-24 object-cover rounded">
+                                <button @click="removeAdditionalImage(index)"
+                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Delete Modal -->
+        <div v-if="showDeleteConfirm"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-xl font-bold mb-4">{{ texts[currentLanguage].confirmDelete }}</h3>
+                <p class="text-gray-600 mb-4">{{ texts[currentLanguage].deleteWarning }}</p>
+                <div class="mb-4">
+                    <input v-model="deletePassword" type="password" :placeholder="texts[currentLanguage].enterPassword"
+                        class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <div class="flex space-x-4">
+                    <button @click="confirmDelete"
+                        class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
+                        {{ texts[currentLanguage].delete }}
+                    </button>
+                    <button @click="cancelDelete"
+                        class="flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400 transition">
+                        {{ texts[currentLanguage].cancel }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating WhatsApp Button -->
+        <a v-if="whatsappNumber" :href="'https://wa.me/' + whatsappNumber.replace(/\D/g, '')" target="_blank"
+            class="floating-whatsapp bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition transform hover:scale-110">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
+
+        <!-- Success/Error Messages -->
+        <div v-if="message" :class="messageType === 'success' ? 'bg-green-500' : 'bg-red-500'"
+            class="fixed top-20 right-4 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+            {{ message }}
+        </div>
+    </div>
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    currentLanguage: 'es',
+                    presentationMode: false,
+                    darkMode: JSON.parse(localStorage.getItem('darkMode') || 'false'),
+                    themeMode: localStorage.getItem('themeMode') || 'neutral', // neutral, feminine, masculine
+                    games: JSON.parse(localStorage.getItem('educationGames') || '[]'),
+                    newGame: {
+                        title: '',
+                        subject: '',
+                        link: '',
+                        thumbnail: '',
+                        description: ''
+                    },
+                    newComment: {},
+                    selectedSubject: '',
+                    searchQuery: '',
+                    showDeleteConfirm: false,
+                    gameToDelete: null,
+                    deletePassword: '',
+                    qrCode: localStorage.getItem('qrCode') || '',
+                    whatsappNumber: localStorage.getItem('whatsappNumber') || '',
+                    additionalImages: JSON.parse(localStorage.getItem('additionalImages') || '[]'),
+                    message: '',
+                    messageType: 'success',
+                    subjects: [
+                        'Matemática', 'Comunicación', 'Ciencia y Tecnología', 'Personal Social',
+                        'Arte y Cultura', 'Educación Física', 'Educación Religiosa', 'Inglés',
+                        'Tutoría', 'Educación para el Trabajo'
+                    ],
+                    teamMembers: [
+                        { name: 'Mireya', quality: 'Creatividad', color: '#f59e0b' },
+                        { name: 'Yudema', quality: 'Liderazgo', color: '#ef4444' },
+                        { name: 'Reyna', quality: 'Innovación', color: '#8b5cf6' },
+                        { name: 'Erwin', quality: 'Constancia', color: '#06b6d4' },
+                        { name: 'Yesenia', quality: 'Visión', color: '#10b981' },
+                        { name: 'Shandall', quality: 'Estrategia', color: '#f97316' },
+                        { name: 'Gilberto', quality: 'Impacto', color: '#84cc16' },
+                        { name: 'Yudiht', quality: 'Colaboración', color: '#ec4899' },
+                        { name: 'William', quality: 'Disciplina', color: '#6366f1' },
+                        { name: 'Álex', quality: 'Perseverancia', color: '#14b8a6' },
+                        { name: 'Adam', quality: 'Pasión', color: '#f43f5e' },
+                        { name: 'Fiorela', quality: 'Metas', color: '#a855f7' },
+                        { name: 'Beatriz', quality: 'Excelencia', color: '#059669' }
+                    ],
+                    texts: {
+                        es: {
+                            welcome: 'EDUCATION EDITION',
+                            motto: 'Aprender es jugar, jugar es aprender',
+                            justification: 'Somos estudiantes del tercer año, sección A, del Colegio Conamir de Rosaspata, ubicado en el hermoso altiplano de Puno, Perú. Bajo la dirección de nuestra profesora Nimia Condori Mamani, hemos creado esta plataforma para revolucionar la educación a través del juego. Inspirados por el emprendedor peruano Mateo Alayza y su empresa Hermanos Magia, creemos firmemente que los videojuegos educativos son el futuro del aprendizaje significativo.',
+                            qrTitle: 'Código QR de Contacto',
+                            exploreGames: 'Explorar Juegos',
+                            uploadGame: 'Subir Juego',
+                            uploadGameTitle: 'Subir Nuevo Juego Educativo',
+                            gameTitle: 'Título del Juego',
+                            subject: 'Área Curricular',
+                            selectSubject: 'Selecciona una materia',
+                            gameLink: 'Enlace del Juego',
+                            thumbnail: 'Miniatura del Juego',
+                            description: 'Descripción',
+                            uploadButton: 'Subir Juego',
+                            exploreTitle: 'Explorar Juegos Educativos',
+                            allSubjects: 'Todas las Materias',
+                            searchPlaceholder: 'Buscar juegos...',
+                            playButton: 'Jugar',
+                            comments: 'Comentarios',
+                            addComment: 'Agregar comentario...',
+                            send: 'Enviar',
+                            teamTitle: 'Nuestro Equipo',
+                            teamSubtitle: 'Estudiantes comprometidos con la educación innovadora',
+                            teamDescription: 'Somos un grupo de estudiantes del 3° año A del Colegio Conamir de Rosaspata, unidos por la pasión de transformar la educación a través de la tecnología y los juegos educativos.',
+                            inspirationTitle: 'Nuestra Inspiración',
+                            founder: 'Fundador de Hermanos Magia',
+                            biographyTitle: 'Biografía de Mateo Alayza',
+                            biography1: 'Mateo Alayza es un emprendedor peruano que ha revolucionado la industria del entretenimiento digital en Latinoamérica. Fundador de Hermanos Magia, una empresa dedicada al desarrollo de videojuegos educativos.',
+                            biography2: 'Su visión de combinar diversión y aprendizaje ha inspirado a miles de jóvenes a ver los videojuegos como herramientas poderosas para la educación. Su trabajo ha demostrado que es posible crear contenido entretenido y educativo al mismo tiempo.',
+                            biography3: 'Como estudiantes del altiplano peruano, vemos en Mateo un ejemplo de que los sueños se pueden hacer realidad con dedicación y creatividad, sin importar de dónde vengamos.',
+                            adminTitle: 'Panel de Administración',
+                            uploadQR: 'Subir Código QR',
+                            whatsappNumber: 'Número de WhatsApp',
+                            save: 'Guardar',
+                            uploadImages: 'Subir Imágenes Adicionales',
+                            confirmDelete: 'Confirmar Eliminación',
+                            deleteWarning: '¿Estás seguro de que quieres eliminar este juego?',
+                            enterPassword: 'Ingresa la contraseña',
+                            delete: 'Eliminar',
+                            cancel: 'Cancelar'
+                        },
+                        en: {
+                            welcome: 'EDUCATION EDITION',
+                            motto: 'Learning is playing, playing is learning',
+                            justification: 'We are third-year students, section A, from Conamir School in Rosaspata, located in the beautiful Puno highlands, Peru. Under the direction of our teacher Nimia Condori Mamani, we have created this platform to revolutionize education through gaming. Inspired by Peruvian entrepreneur Mateo Alayza and his company Hermanos Magia, we firmly believe that educational video games are the future of meaningful learning.',
+                            qrTitle: 'Contact QR Code',
+                            exploreGames: 'Explore Games',
+                            uploadGame: 'Upload Game',
+                            uploadGameTitle: 'Upload New Educational Game',
+                            gameTitle: 'Game Title',
+                            subject: 'Subject Area',
+                            selectSubject: 'Select a subject',
+                            gameLink: 'Game Link',
+                            thumbnail: 'Game Thumbnail',
+                            description: 'Description',
+                            uploadButton: 'Upload Game',
+                            exploreTitle: 'Explore Educational Games',
+                            allSubjects: 'All Subjects',
+                            searchPlaceholder: 'Search games...',
+                            playButton: 'Play',
+                            comments: 'Comments',
+                            addComment: 'Add comment...',
+                            send: 'Send',
+                            teamTitle: 'Our Team',
+                            teamSubtitle: 'Entrepreneurial students from Conamir School',
+                            teamDescription: 'We are a group of students passionate about technology and education, working together to create innovative learning experiences that transform the way our peers learn.',
+                            inspirationTitle: 'Our Inspiration',
+                            founder: 'Founder of Hermanos Magia',
+                            biographyTitle: 'About Mateo Alayza',
+                            biography1: 'Mateo Alayza is a visionary Peruvian entrepreneur who has revolutionized education in Peru through the creation of educational video games. As founder of Hermanos Magia, he has shown that learning can be fun, effective and accessible to everyone.',
+                            biography2: 'His work has inspired thousands of students and educators throughout the country, showing that technology can be a powerful tool to improve educational quality. His video games have been used in schools throughout Peru, helping students learn mathematics, science and other subjects interactively.',
+                            biography3: 'As a team of students from Conamir School, we feel deeply inspired by his vision and dedication. His example motivates us to continue innovating and creating educational solutions that can positively impact our educational community.',
+                            adminTitle: 'Administration Panel',
+                            uploadQR: 'Upload QR Code',
+                            whatsappNumber: 'WhatsApp Number',
+                            save: 'Save',
+                            uploadImages: 'Upload Additional Images',
+                            confirmDelete: 'Confirm Deletion',
+                            deleteWarning: 'Enter password to delete this game:',
+                            enterPassword: 'Enter password',
+                            delete: 'Delete',
+                            cancel: 'Cancel'
+                        }
+                    }
+                }
+            },
+            computed: {
+                filteredGames() {
+                    let filtered = this.games;
+
+                    if (this.selectedSubject) {
+                        filtered = filtered.filter(game => game.subject === this.selectedSubject);
+                    }
+
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        filtered = filtered.filter(game =>
+                            game.title.toLowerCase().includes(query) ||
+                            game.description.toLowerCase().includes(query) ||
+                            game.subject.toLowerCase().includes(query)
+                        );
+                    }
+
+                    return filtered;
+                }
+            },
+            methods: {
+                toggleLanguage() {
+                    this.currentLanguage = this.currentLanguage === 'es' ? 'en' : 'es';
+                },
+
+                togglePresentationMode() {
+                    this.presentationMode = !this.presentationMode;
+                    if (this.presentationMode) {
+                        document.body.style.fontSize = '1.2em';
+                    } else {
+                        document.body.style.fontSize = '';
+                    }
+                },
+
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('darkMode', JSON.stringify(this.darkMode));
+                    this.updateBodyClasses();
+                },
+
+                toggleThemeMode() {
+                    const modes = ['neutral', 'feminine', 'masculine'];
+                    const currentIndex = modes.indexOf(this.themeMode);
+                    this.themeMode = modes[(currentIndex + 1) % modes.length];
+                    localStorage.setItem('themeMode', this.themeMode);
+                    this.updateBodyClasses();
+                },
+
+                getThemeModeIcon() {
+                    switch (this.themeMode) {
+                        case 'feminine': return 'fas fa-venus';
+                        case 'masculine': return 'fas fa-mars';
+                        default: return 'fas fa-palette';
+                    }
+                },
+
+                getThemeModeTitle() {
+                    switch (this.themeMode) {
+                        case 'feminine': return 'Modo Femenino';
+                        case 'masculine': return 'Modo Masculino';
+                        default: return 'Modo Neutral';
+                    }
+                },
+
+                updateBodyClasses() {
+                    const body = document.body;
+                    // Remove all theme classes
+                    body.classList.remove('dark', 'feminine', 'masculine');
+
+                    // Add dark mode if enabled
+                    if (this.darkMode) {
+                        body.classList.add('dark');
+                    }
+
+                    // Add theme mode if not neutral
+                    if (this.themeMode !== 'neutral') {
+                        body.classList.add(this.themeMode);
+                    }
+                },
+
+                handleImageUpload(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.newGame.thumbnail = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                },
+
+                uploadGame() {
+                    const game = {
+                        id: Date.now(),
+                        ...this.newGame,
+                        views: 0,
+                        likes: 0,
+                        liked: false,
+                        comments: [],
+                        uploadDate: new Date().toLocaleDateString()
+                    };
+
+                    this.games.push(game);
+                    this.saveGames();
+                    this.showMessage('¡Juego subido exitosamente!', 'success');
+
+                    // Reset form
+                    this.newGame = {
+                        title: '',
+                        subject: '',
+                        link: '',
+                        thumbnail: '',
+                        description: ''
+                    };
+                },
+
+                filterBySubject(subject) {
+                    this.selectedSubject = subject;
+                },
+
+                incrementViews(game) {
+                    game.views++;
+                    this.saveGames();
+                },
+
+                toggleLike(game) {
+                    if (game.liked) {
+                        game.likes--;
+                        game.liked = false;
+                    } else {
+                        game.likes++;
+                        game.liked = true;
+                    }
+                    this.saveGames();
+                },
+
+                shareGame(game) {
+                    const shareData = {
+                        title: game.title,
+                        text: `¡Mira este juego educativo: ${game.title}!`,
+                        url: game.link
+                    };
+
+                    if (navigator.share) {
+                        navigator.share(shareData);
+                    } else {
+                        // Fallback to WhatsApp
+                        const message = encodeURIComponent(`¡Mira este juego educativo: ${game.title}! ${game.link}`);
+                        window.open(`https://wa.me/?text=${message}`, '_blank');
+                    }
+                },
+
+                showDeleteModal(game) {
+                    this.gameToDelete = game;
+                    this.showDeleteConfirm = true;
+                    this.deletePassword = '';
+                },
+
+                confirmDelete() {
+                    if (this.deletePassword === '1234') {
+                        const index = this.games.findIndex(g => g.id === this.gameToDelete.id);
+                        if (index > -1) {
+                            this.games.splice(index, 1);
+                            this.saveGames();
+                            this.showMessage('Juego eliminado exitosamente', 'success');
+                        }
+                        this.cancelDelete();
+                    } else {
+                        this.showMessage('Contraseña incorrecta', 'error');
+                    }
+                },
+
+                cancelDelete() {
+                    this.showDeleteConfirm = false;
+                    this.gameToDelete = null;
+                    this.deletePassword = '';
+                },
+
+                addComment(game) {
+                    const commentText = this.newComment[game.id];
+                    if (commentText && commentText.trim()) {
+                        const comment = {
+                            id: Date.now(),
+                            text: commentText.trim(),
+                            author: 'Docente',
+                            date: new Date().toLocaleDateString()
+                        };
+
+                        if (!game.comments) {
+                            game.comments = [];
+                        }
+
+                        game.comments.push(comment);
+                        this.newComment[game.id] = '';
+                        this.saveGames();
+                    }
+                },
+
+                handleQRUpload(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.qrCode = e.target.result;
+                            localStorage.setItem('qrCode', this.qrCode);
+                            this.showMessage('Código QR actualizado', 'success');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                },
+
+                saveWhatsappNumber() {
+                    localStorage.setItem('whatsappNumber', this.whatsappNumber);
+                    this.showMessage('Número de WhatsApp guardado', 'success');
+                },
+
+                handleAdditionalImages(event) {
+                    const files = Array.from(event.target.files);
+                    files.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.additionalImages.push(e.target.result);
+                            localStorage.setItem('additionalImages', JSON.stringify(this.additionalImages));
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    this.showMessage('Imágenes subidas exitosamente', 'success');
+                },
+
+                removeAdditionalImage(index) {
+                    this.additionalImages.splice(index, 1);
+                    localStorage.setItem('additionalImages', JSON.stringify(this.additionalImages));
+                },
+
+                saveGames() {
+                    localStorage.setItem('educationGames', JSON.stringify(this.games));
+                },
+
+                showMessage(text, type = 'success') {
+                    this.message = text;
+                    this.messageType = type;
+                    setTimeout(() => {
+                        this.message = '';
+                    }, 3000);
+                }
+            },
+
+            mounted() {
+                // Initialize theme modes
+                this.updateBodyClasses();
+
+                // Initialize games with some sample data if empty
+                if (this.games.length === 0) {
+                    this.games = [
+                        {
+                            id: 1,
+                            title: 'Matemática Divertida',
+                            subject: 'Matemática',
+                            link: 'https://wordwall.net/es/resource/123456',
+                            thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzEwYjk4MSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+TWF0ZW3DoXRpY2E8L3RleHQ+PC9zdmc+',
+                            description: 'Juego interactivo para aprender operaciones básicas de matemática',
+                            views: 45,
+                            likes: 12,
+                            liked: false,
+                            comments: [],
+                            uploadDate: new Date().toLocaleDateString()
+                        }
+                    ];
+                    this.saveGames();
+                }
+
+                // Smooth scrolling for navigation links
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
