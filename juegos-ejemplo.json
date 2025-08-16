@@ -1,0 +1,104 @@
+{
+  "games": [
+    {
+      "id": 1703123456789,
+      "title": "Matemática Divertida",
+      "subject": "Matemática",
+      "link": "https://www.mathplayground.com/",
+      "thumbnail": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMTBiOTgxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5NYXRlbcOhdGljYTwvdGV4dD48L3N2Zz4=",
+      "description": "Juegos interactivos para aprender matemáticas de forma divertida",
+      "views": 45,
+      "likes": 12,
+      "liked": false,
+      "comments": [
+        {
+          "id": 1,
+          "text": "¡Excelente juego para practicar sumas!",
+          "author": "María",
+          "date": "2024-01-15"
+        }
+      ],
+      "uploadDate": "2024-01-10T10:30:00.000Z"
+    },
+    {
+      "id": 1703123456790,
+      "title": "Aventura en el Lenguaje",
+      "subject": "Comunicación",
+      "link": "https://www.funbrain.com/",
+      "thumbnail": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWY0NDQ0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db211bmljYWNpw7NuPC90ZXh0Pjwvc3ZnPg==",
+      "description": "Mejora tu comprensión lectora y vocabulario con aventuras interactivas",
+      "views": 32,
+      "likes": 8,
+      "liked": false,
+      "comments": [],
+      "uploadDate": "2024-01-12T14:20:00.000Z"
+    },
+    {
+      "id": 1703123456791,
+      "title": "Laboratorio Virtual",
+      "subject": "Ciencia y Tecnología",
+      "link": "https://phet.colorado.edu/es/",
+      "thumbnail": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjOGI1Y2Y2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DaWVuY2lhPC90ZXh0Pjwvc3ZnPg==",
+      "description": "Experimentos virtuales de física, química y biología",
+      "views": 67,
+      "likes": 18,
+      "liked": false,
+      "comments": [
+        {
+          "id": 1,
+          "text": "Los experimentos de química son increíbles",
+          "author": "Carlos",
+          "date": "2024-01-14"
+        },
+        {
+          "id": 2,
+          "text": "Perfecto para entender conceptos complejos",
+          "author": "Ana",
+          "date": "2024-01-16"
+        }
+      ],
+      "uploadDate": "2024-01-08T09:15:00.000Z"
+    },
+    {
+      "id": 1703123456792,
+      "title": "Geografía Mundial",
+      "subject": "Personal Social",
+      "link": "https://world-geography-games.com/",
+      "thumbnail": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDZiNmQ0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5HZW9ncmFmw61hPC90ZXh0Pjwvc3ZnPg==",
+      "description": "Aprende países, capitales y culturas del mundo",
+      "views": 28,
+      "likes": 6,
+      "liked": false,
+      "comments": [],
+      "uploadDate": "2024-01-13T16:45:00.000Z"
+    },
+    {
+      "id": 1703123456793,
+      "title": "English Adventure",
+      "subject": "Inglés",
+      "link": "https://www.duolingo.com/",
+      "thumbnail": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjk3MzE2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Jbmdsw6lzPC90ZXh0Pjwvc3ZnPg==",
+      "description": "Aprende inglés de manera interactiva y divertida",
+      "views": 89,
+      "likes": 25,
+      "liked": false,
+      "comments": [
+        {
+          "id": 1,
+          "text": "¡Me encanta practicar con este juego!",
+          "author": "Luis",
+          "date": "2024-01-17"
+        }
+      ],
+      "uploadDate": "2024-01-05T11:00:00.000Z"
+    }
+  ],
+  "exportDate": "2024-01-20T10:30:00.000Z",
+  "version": "1.0",
+  "totalGames": 5,
+  "metadata": {
+    "school": "Conamir Rosaspata",
+    "grade": "3° A",
+    "location": "Puno, Perú"
+  }
+}

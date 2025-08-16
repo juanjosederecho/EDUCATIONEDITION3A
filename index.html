@@ -469,6 +469,57 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Export/Import Games -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4">{{ texts[currentLanguage].exportImportGames }}</h3>
+                        <div class="space-y-4">
+                            <!-- Export Games -->
+                            <div>
+                                <button @click="exportGames"
+                                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition flex items-center justify-center">
+                                    <i class="fas fa-download mr-2"></i>
+                                    {{ texts[currentLanguage].exportGames }}
+                                </button>
+                                <p class="text-sm text-gray-600 mt-2">{{ texts[currentLanguage].exportDescription }}</p>
+                            </div>
+
+                            <!-- Import Games -->
+                            <div>
+                                <input @change="handleImportGames" type="file" accept=".json" ref="importInput"
+                                    class="hidden">
+                                <button @click="$refs.importInput.click()"
+                                    class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition flex items-center justify-center">
+                                    <i class="fas fa-upload mr-2"></i>
+                                    {{ texts[currentLanguage].importGames }}
+                                </button>
+                                <p class="text-sm text-gray-600 mt-2">{{ texts[currentLanguage].importDescription }}</p>
+                            </div>
+
+                            <!-- Games Statistics -->
+                            <div class="bg-white p-4 rounded-lg border">
+                                <h4 class="font-semibold mb-2">{{ texts[currentLanguage].gamesStatistics }}</h4>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-600">{{ texts[currentLanguage].totalGames }}:</span>
+                                        <span class="font-semibold ml-1">{{ games.length }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">{{ texts[currentLanguage].totalViews }}:</span>
+                                        <span class="font-semibold ml-1">{{ getTotalViews() }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">{{ texts[currentLanguage].totalLikes }}:</span>
+                                        <span class="font-semibold ml-1">{{ getTotalLikes() }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">{{ texts[currentLanguage].lastUpdate }}:</span>
+                                        <span class="font-semibold ml-1">{{ getLastUpdateDate() }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -489,6 +540,49 @@
                         {{ texts[currentLanguage].delete }}
                     </button>
                     <button @click="cancelDelete"
+                        class="flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400 transition">
+                        {{ texts[currentLanguage].cancel }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Confirmation Modal -->
+        <div v-if="showImportConfirm"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <div class="text-center mb-4">
+                    <i class="fas fa-upload text-4xl text-blue-600 mb-2"></i>
+                    <h3 class="text-xl font-bold">{{ texts[currentLanguage].confirmImport }}</h3>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-600">{{ texts[currentLanguage].totalGames }}:</span>
+                        <span class="font-semibold">{{ importPreview.totalGames }}</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-600">{{ texts[currentLanguage].exportDate }}:</span>
+                        <span class="font-semibold">{{ formatDate(importPreview.exportDate) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Versión:</span>
+                        <span class="font-semibold">{{ importPreview.version }}</span>
+                    </div>
+                </div>
+
+                <p class="text-gray-600 mb-4 text-sm">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 mr-1"></i>
+                    {{ texts[currentLanguage].importWarning }}
+                </p>
+
+                <div class="flex space-x-4">
+                    <button @click="confirmImport"
+                        class="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+                        <i class="fas fa-check mr-1"></i>
+                        {{ texts[currentLanguage].import }}
+                    </button>
+                    <button @click="cancelImport"
                         class="flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400 transition">
                         {{ texts[currentLanguage].cancel }}
                     </button>
@@ -532,6 +626,9 @@
                     showDeleteConfirm: false,
                     gameToDelete: null,
                     deletePassword: '',
+                    showImportConfirm: false,
+                    importPreview: {},
+                    pendingImportData: null,
                     qrCode: localStorage.getItem('qrCode') || '',
                     whatsappNumber: localStorage.getItem('whatsappNumber') || '',
                     additionalImages: JSON.parse(localStorage.getItem('additionalImages') || '[]'),
@@ -594,6 +691,24 @@
                             whatsappNumber: 'Número de WhatsApp',
                             save: 'Guardar',
                             uploadImages: 'Subir Imágenes Adicionales',
+                            exportImportGames: 'Exportar/Importar Juegos',
+                            exportGames: 'Exportar Juegos',
+                            importGames: 'Importar Juegos',
+                            exportDescription: 'Descarga todos los juegos en un archivo JSON para transferir a otro navegador',
+                            importDescription: 'Selecciona un archivo JSON para importar juegos desde otro navegador',
+                            gamesStatistics: 'Estadísticas de Juegos',
+                            totalGames: 'Total de Juegos',
+                            totalViews: 'Total de Vistas',
+                            totalLikes: 'Total de Me Gusta',
+                            lastUpdate: 'Última Actualización',
+                            exportSuccess: 'Juegos exportados exitosamente',
+                            importSuccess: 'Juegos importados exitosamente',
+                            importError: 'Error al importar juegos. Verifica que el archivo sea válido',
+                            confirmImport: 'Confirmar Importación',
+                            gamesFound: 'juegos encontrados en el archivo',
+                            importWarning: 'Esta acción reemplazará todos los juegos actuales con los del archivo.',
+                            import: 'Importar',
+                            exportDate: 'Fecha de Exportación',
                             confirmDelete: 'Confirmar Eliminación',
                             deleteWarning: '¿Estás seguro de que quieres eliminar este juego?',
                             enterPassword: 'Ingresa la contraseña',
@@ -636,6 +751,24 @@
                             whatsappNumber: 'WhatsApp Number',
                             save: 'Save',
                             uploadImages: 'Upload Additional Images',
+                            exportImportGames: 'Export/Import Games',
+                            exportGames: 'Export Games',
+                            importGames: 'Import Games',
+                            exportDescription: 'Download all games in a JSON file to transfer to another browser',
+                            importDescription: 'Select a JSON file to import games from another browser',
+                            gamesStatistics: 'Games Statistics',
+                            totalGames: 'Total Games',
+                            totalViews: 'Total Views',
+                            totalLikes: 'Total Likes',
+                            lastUpdate: 'Last Update',
+                            exportSuccess: 'Games exported successfully',
+                            importSuccess: 'Games imported successfully',
+                            importError: 'Error importing games. Please verify the file is valid',
+                            confirmImport: 'Confirm Import',
+                            gamesFound: 'games found in file',
+                            importWarning: 'This action will replace all current games with those from the file.',
+                            import: 'Import',
+                            exportDate: 'Export Date',
                             confirmDelete: 'Confirm Deletion',
                             deleteWarning: 'Enter password to delete this game:',
                             enterPassword: 'Enter password',
@@ -744,7 +877,7 @@
                         likes: 0,
                         liked: false,
                         comments: [],
-                        uploadDate: new Date().toLocaleDateString()
+                        uploadDate: new Date().toISOString()
                     };
 
                     this.games.push(game);
@@ -877,6 +1010,137 @@
                 removeAdditionalImage(index) {
                     this.additionalImages.splice(index, 1);
                     localStorage.setItem('additionalImages', JSON.stringify(this.additionalImages));
+                },
+
+                // Export games to JSON file
+                exportGames() {
+                    try {
+                        const exportData = {
+                            games: this.games,
+                            exportDate: new Date().toISOString(),
+                            version: '1.0',
+                            totalGames: this.games.length,
+                            metadata: {
+                                school: 'Conamir Rosaspata',
+                                grade: '3° A',
+                                location: 'Puno, Perú'
+                            }
+                        };
+
+                        const dataStr = JSON.stringify(exportData, null, 2);
+                        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(dataBlob);
+                        link.download = `education-edition-games-${new Date().toISOString().split('T')[0]}.json`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        this.showMessage(this.texts[this.currentLanguage].exportSuccess, 'success');
+                    } catch (error) {
+                        console.error('Error exporting games:', error);
+                        this.showMessage('Error al exportar juegos', 'error');
+                    }
+                },
+
+                // Import games from JSON file
+                handleImportGames(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const importData = JSON.parse(e.target.result);
+
+                            // Validate import data structure
+                            if (!importData.games || !Array.isArray(importData.games)) {
+                                throw new Error('Invalid file format');
+                            }
+
+                            // Store import data and show preview modal
+                            this.pendingImportData = importData.games;
+                            this.importPreview = {
+                                totalGames: importData.games.length,
+                                exportDate: importData.exportDate,
+                                version: importData.version || '1.0'
+                            };
+                            this.showImportConfirm = true;
+
+                        } catch (error) {
+                            console.error('Error parsing import file:', error);
+                            this.showMessage(this.texts[this.currentLanguage].importError, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+
+                    // Reset file input
+                    event.target.value = '';
+                },
+
+                // Import games data
+                importGames(importedGames) {
+                    try {
+                        // Process imported games and assign new IDs to avoid conflicts
+                        const processedGames = importedGames.map(game => ({
+                            ...game,
+                            id: Date.now() + Math.random(), // Generate new unique ID
+                            importDate: new Date().toISOString()
+                        }));
+
+                        // Replace current games with imported ones
+                        this.games = processedGames;
+
+                        // Save to localStorage
+                        localStorage.setItem('educationGames', JSON.stringify(this.games));
+
+                        this.showMessage(this.texts[this.currentLanguage].importSuccess, 'success');
+                    } catch (error) {
+                        console.error('Error importing games:', error);
+                        this.showMessage(this.texts[this.currentLanguage].importError, 'error');
+                    }
+                },
+
+                // Get total views across all games
+                getTotalViews() {
+                    return this.games.reduce((total, game) => total + (game.views || 0), 0);
+                },
+
+                // Get total likes across all games
+                getTotalLikes() {
+                    return this.games.reduce((total, game) => total + (game.likes || 0), 0);
+                },
+
+                // Get last update date
+                getLastUpdateDate() {
+                    if (this.games.length === 0) return 'N/A';
+
+                    const dates = this.games.map(game => new Date(game.uploadDate || game.importDate || Date.now()));
+                    const lastDate = new Date(Math.max(...dates));
+
+                    return lastDate.toLocaleDateString('es-ES');
+                },
+
+                // Confirm import from modal
+                confirmImport() {
+                    if (this.pendingImportData) {
+                        this.importGames(this.pendingImportData);
+                        this.cancelImport();
+                    }
+                },
+
+                // Cancel import
+                cancelImport() {
+                    this.showImportConfirm = false;
+                    this.pendingImportData = null;
+                    this.importPreview = {};
+                },
+
+                // Format date for display
+                formatDate(dateString) {
+                    if (!dateString) return 'N/A';
+                    return new Date(dateString).toLocaleDateString('es-ES');
                 },
 
                 saveGames() {
